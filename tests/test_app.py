@@ -22,7 +22,8 @@ def test_valid_submission_is_saved_and_listed(setup):
     client, data_file = setup
     response = client.post("/", data=VALID)
     assert response.status_code == 200
-assert "INTENTIONALLY_WRONG_MESSAGE" in response.get_data(as_text=True)
+    assert "Submission saved successfully" in response.get_data(as_text=True)
+
     page = client.get("/").get_data(as_text=True)
     assert VALID["reg_no"] in page
     assert "Lab Midterm" in page
