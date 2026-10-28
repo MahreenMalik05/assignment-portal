@@ -58,11 +58,11 @@ Individual Tests:
     msg.replace_header("To", email_to)
 
     with smtplib.SMTP("smtp.gmail.com", 587, timeout=30) as server:
-        server.ehlo()
-        server.starttls()
-        server.ehlo()
-        server.login(email_username, email_password)
-        server.send_message(msg)
+     server.ehlo()
+    server.starttls()
+    server.ehlo()
+    server.login(email_username, email_password)
+    server.send_message(msg)
 
     print("Email sent successfully")
 if __name__ == "__main__":
