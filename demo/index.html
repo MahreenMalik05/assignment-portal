@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Assignment Submission Portal (Demo)</title>
+  <style>
+    body{font-family:Arial,sans-serif;max-width:800px;margin:30px auto;padding:0 15px;background:#f4f6f9}
+    h1{color:#2a6ee4}
+    form,table{background:#fff;padding:15px;border-radius:8px;box-shadow:0 1px 4px #0002;width:100%}
+    input{display:block;width:100%;padding:8px;margin:6px 0 12px;box-sizing:border-box}
+    button{background:#236ff3;color:#fff;border:0;padding:10px 18px;border-radius:5px;cursor:pointer}
+    .error{background:#fde2e2;color:#b00020;padding:10px;border-radius:5px;margin-bottom:10px}
+    .success{background:#dff5e1;color:#1b6e2d;padding:10px;border-radius:5px;margin-bottom:10px}
+    td,th{border-bottom:1px solid #ddd;padding:8px;text-align:left}
+  </style>
+</head>
+<body>
+  <h1>Assignment Submission Portal (Static Demo)</h1>
+  <div id="msg"></div>
+  <form id="form">
+    <label>Name</label><input id="name" required>
+    <label>Registration Number</label><input id="reg_no" required>
+    <label>Assignment Title</label><input id="title" required>
+    <label>Submission URL</label><input id="url" required>
+    <button type="submit">Submit</button>
+  </form>
+  <h2>Saved Submissions</h2>
+  <table>
+    <thead><tr><th>Name</th><th>Reg No</th><th>Title</th><th>URL</th><th>Time</th></tr></thead>
+    <tbody id="list"></tbody>
+  </table>
+<script>
+const form = document.getElementById('form');
+const msg = document.getElementById('msg');
+const list = document.getElementById('list');
+function isValidUrl(u){
+  try{ const p=new URL(u); return (p.protocol==='http:'||p.protocol==='https:') && p.hostname.includes('.'); }
+  catch{return false;}
+}
+function load(){
+  const data = JSON.parse(localStorage.getItem('subs')||'[]');
+  list.innerHTML = data.length ? data.map(s=>`<tr><td>${s.name}</td><td>${s.reg_no}</td><td>${s.title}</td><td><a href="${s.url}">${s.url}</a></td><td>${s.time}</td></tr>`).join('') : '<tr><td colspan="5">No submissions yet.</td></tr>';
+}
+form.onsubmit = e=>{
+  e.preventDefault();
+  msg.innerHTML='';
+  const name=document.getElementById('name').value.trim();
+  const reg=document.getElementById('reg_no').value.trim();
+  const title=document.getElementById('title').value.trim();
+  const url=document.getElementById('url').value.trim();
+  if(!name||!reg||!title||!url){ msg.innerHTML='<div class="error">All fields are required.</div>'; return; }
+  if(!isValidUrl(url)){ msg.innerHTML='<div class="error">Submission URL is invalid. It must start with http:// or https://</div>'; return; }
+  const data=JSON.parse(localStorage.getItem('subs')||'[]');
+  data.push({name,reg_no:reg,title,url,time:new Date().toLocaleString()});
+  localStorage.setItem('subs',JSON.stringify(data));
+  msg.innerHTML='<div class="success">Submission saved successfully!</div>';
+  form.reset(); load();
+};
+load();
+</script>
+</body>
+</html>
