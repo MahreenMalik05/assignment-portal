@@ -50,10 +50,20 @@ Individual Tests:
     part.add_header("Content-Disposition", 'attachment; filename="test-report.json"')
     msg.attach(part)
 
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-        server.login(os.environ["EMAIL_USERNAME"], os.environ["EMAIL_PASSWORD"])
-        server.send_message(msg)
-    print("Email sent successfully")
+    email_username = os.environ["EMAIL_USERNAME"].strip()
+    email_password = os.environ["EMAIL_PASSWORD"].strip()
+    email_to = os.environ["EMAIL_TO"].strip()
 
+    msg.replace_header("From", email_username)
+    msg.replace_header("To", email_to)
+
+    with smtplib.SMTP("smtp.gmail.com", 587, timeout=30) as server:
+        server.ehlo()
+        server.starttls()
+        server.ehlo()
+        server.login(email_username, email_password)
+        server.send_message(msg)
+
+    print("Email sent successfully")
 if __name__ == "__main__":
     main()
