@@ -12,7 +12,7 @@ def is_valid_url(url):
     return (
         parsed.scheme in ("http", "https")
         and bool(parsed.netloc)
-        and "." in parsed.netloc
+        and ".." in parsed.netloc
         and " " not in url
     )
 
