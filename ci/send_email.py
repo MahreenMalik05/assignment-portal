@@ -57,12 +57,20 @@ Individual Tests:
     msg.replace_header("From", email_username)
     msg.replace_header("To", email_to)
 
-    with smtplib.SMTP("smtp.gmail.com", 587, timeout=30) as server:
-     server.ehlo()
-    server.starttls()
-    server.ehlo()
-    server.login(email_username, email_password)
-    server.send_message(msg)
+    email_username = os.environ["EMAIL_USERNAME"].strip()
+    email_password = os.environ["EMAIL_PASSWORD"].strip()
+    email_to = os.environ["EMAIL_TO"].strip()
+
+    msg.replace_header("From", email_username)
+    msg.replace_header("To", email_to)
+
+    with smtplib.SMTP_SSL(
+        "smtp.gmail.com", 465, timeout=30
+    ) as server:
+        server.login(email_username, email_password)
+        server.send_message(msg)
+
+    print("Email sent successfully")
 
     print("Email sent successfully")
 if __name__ == "__main__":
